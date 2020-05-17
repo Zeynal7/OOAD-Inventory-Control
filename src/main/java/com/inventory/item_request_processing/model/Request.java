@@ -2,15 +2,19 @@ package com.inventory.item_request_processing.model;
 
 import com.inventory.item_management.model.Item;
 import com.inventory.user_management.model.Employee;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Request {
+    @Schema(example = "1")
     private int id;
     private Employee employee;
     private Item item;
+    @Schema(example = "2020-05-11")
     private String requestDate;
+    @Schema(example = "Waiting Delivery")
     private String status;
 
     public Request(Employee employee, Item item) {

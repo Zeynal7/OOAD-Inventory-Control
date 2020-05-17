@@ -18,7 +18,9 @@ public class ApiException extends Exception {
         TOKEN_INIT_PROBLEM(5),
         USER_NOT_FOUND(6),
         NOT_AUTHORIZED(7),
-        BLOCKED_USER(8);
+        BLOCKED_USER(8),
+        ITEM_HAS_ASSIGNED_EMPLOYEE(9),
+        CANNOT_SET_AVAILABILITY_TO_NEGATIVE(10);
 
         private final int exceptionCode;
 
@@ -85,6 +87,12 @@ public class ApiException extends Exception {
             case BLOCKED_USER:
                 descMessage = "You have been blocked from using our services." +
                         " If you think this is a mistake, please, contact via feedback.";
+                break;
+            case ITEM_HAS_ASSIGNED_EMPLOYEE:
+                descMessage = "Item has assigned employee, when deleting make sure there is no employee with assigned item";
+                break;
+            case CANNOT_SET_AVAILABILITY_TO_NEGATIVE:
+                descMessage = "Cannot set availability to negative number.";
                 break;
             default:
                 descMessage = "Unknown Error";

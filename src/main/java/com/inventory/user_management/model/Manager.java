@@ -10,7 +10,7 @@ public class Manager extends User {
     }
 
     public Manager(User user) {
-        super(user.getId(), user.getFullname(), user.getEmail());
+        super(user.getId(), user.getFullName(), user.getEmail());
     }
 
     public void assign(Item item, Employee employee) throws Exception {
