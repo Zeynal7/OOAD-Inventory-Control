@@ -2,6 +2,7 @@ package com.inventory.item_management;
 
 import com.inventory.helper.ApiException;
 import com.inventory.helper.DbConnection;
+import com.inventory.helper.Enums;
 import com.inventory.item_management.model.Item;
 import com.inventory.item_management.model.Stock;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -61,7 +62,7 @@ public class ItemResources {
         return DbConnection.selectFromDB(query, new Object[]{});
     }
 
-    private static Item[] parseItems(ArrayList<Object[]> allItemRows) {
+    public static Item[] parseItems(ArrayList<Object[]> allItemRows) {
         Item[] items = new Item[allItemRows.size()];
         for (int i = 0; i < items.length; i++) {
             items[i] = new Item(allItemRows.get(i));
@@ -183,11 +184,20 @@ public class ItemResources {
             int itemCountToAdd = availability - currentlyAvailable;
             if(itemCountToAdd != 0){
                 changeAvailabilityBy(itemCountToAdd, id);
+                updateStatusOfItem(availability, id);
             }
             return Response.ok().build();
         } catch (Exception e) {
             return checkException(e);
         }
+    }
+
+    private void updateStatusOfItem(int availability, int id) throws Exception {
+        String query = "UPDATE `item` SET `status` = ? WHERE `item`.`item_id` = ?";
+        ArrayList<Object> parameters = new ArrayList<>();
+        parameters.add((availability == 0 ) ? Enums.ItemStatus.OUT_OF_STOCK.getStatus() : Enums.ItemStatus.AVAILABLE.getStatus());
+        parameters.add(id);
+        DbConnection.insertUpdateToDB(query, parameters, parameters.size());
     }
 
     private void changeAvailabilityBy(int itemCountToAdd, int id) throws Exception {

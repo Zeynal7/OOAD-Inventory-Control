@@ -25,6 +25,14 @@ public class Request {
         this.requestDate = formatter.format(date);
     }
 
+    public Request(int id, Employee employee, Item item, String requestDate, String status) {
+        this.id = id;
+        this.employee = employee;
+        this.item = item;
+        this.requestDate = requestDate;
+        this.status = status;
+    }
+
     public Employee getEmployee() {
         return employee;
     }

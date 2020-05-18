@@ -18,15 +18,15 @@ public abstract class Person {
         this.id = id;
         this.fullName = fullName;
     }
-
-    public Stock getAvailableItems(){
-        try {
-            return getCurrentStock();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new Stock();
-    }
+//
+//    public Stock getAvailableItems(){
+//        try {
+//            return getCurrentStock();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return new Stock();
+//    }
 
 
 //    public Report createReport(List<Employee> employeeList){

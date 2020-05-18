@@ -8,9 +8,11 @@ public class Enums {
 
     public enum Credentials {
         // Local - For testing from local computer
-        URL("jdbc:mysql://localhost:3307/inventory_control?characterEncoding=utf8"),
-        USER("username"),
-        PASSWORD("password");
+        //URL("jdbc:mysql://localhost:3307/inventory_control?characterEncoding=utf8"),
+        // Global
+        URL("jdbc:mysql://31.171.108.153:3306/inventory_control?characterEncoding=utf8"),
+        USER("test_user"),
+        PASSWORD("R2iCH8HK3V!jrmfZ");
 
         private final String data;
 
@@ -59,9 +61,12 @@ public class Enums {
 
     public enum ItemStatus {
         AVAILABLE("Available"),
+        OUT_OF_STOCK("Out of Stock"),
         WAITING_DELIVERY("Waiting Delivery"),
-        ASSIGNED("Assigned"),
-        DELIVERED("Delivered");
+        DELIVERED("Delivered"), // Delivered By Courier
+        REJECTED("Rejected"), // Rejected By Admin
+        WAITING_APPROVAL("Waiting Approval"),// Approval Of Admin
+        APPROVED("Approved");// Approval Of Admin
 
         private final String status;
 
@@ -77,9 +82,12 @@ public class Enums {
         public static ItemStatus valueFromString(String status){
             switch (status.toLowerCase()){
                 case "available":        return AVAILABLE;
+                case "out of stock":     return OUT_OF_STOCK;
                 case "waiting delivery": return WAITING_DELIVERY;
-                case "assigned":         return ASSIGNED;
                 case "delivered":        return DELIVERED;
+                case "rejected":         return REJECTED;
+                case "waiting approval": return WAITING_APPROVAL;
+                case "approved":         return APPROVED;
                 default:                 return AVAILABLE;
 
             }
