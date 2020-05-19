@@ -26,39 +26,6 @@ public class Enums {
     }
 
 
-    public enum FilePath {
-        WINDOWS("C:\\"),
-        MAC("/Users/zeynal/"),
-        LINUX("/home/ada_app/");
-
-        private final String path;
-
-        FilePath(String path) {
-            this.path = path;
-        }
-
-        public String path(FileLocation location) {
-            return path + location.location() + File.separatorChar;
-        }
-    }
-
-
-    public enum FileLocation {
-        PROFILE_PHOTOS("profile_photos"),
-        ITEM_IMAGES("item_images");
-
-        private final String location;
-
-
-        FileLocation(String location) {
-            this.location = location;
-        }
-
-        String location() {
-            return mainFolder + File.separatorChar + location;
-        }
-    }
-
     public enum ItemStatus {
         AVAILABLE("Available"),
         OUT_OF_STOCK("Out of Stock"),

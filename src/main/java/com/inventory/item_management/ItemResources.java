@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.json.JSONObject;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
@@ -51,14 +52,18 @@ public class ItemResources {
     }
 
     public static Stock getCurrentStock() throws Exception {
-        ArrayList<Object[]> allItemRows = getItemsFromDB();
+        ArrayList<Object[]> allItemRows = getItemsFromDB(null);
         Item[] items = parseItems(allItemRows);
         return mapAvailabilityToItems(items, allItemRows);
     }
 
 
-    private static ArrayList<Object[]> getItemsFromDB() throws Exception {
+    private static ArrayList<Object[]> getItemsFromDB(Integer itemId) throws Exception {
         String query = "Select item_id, name, manufacture_date, status, description, item_image_urls, availability from available_items";
+        if(itemId != null){
+            query += " Where item_id = ?";
+            return DbConnection.selectFromDB(query, new Object[]{itemId});
+        }
         return DbConnection.selectFromDB(query, new Object[]{});
     }
 
@@ -78,6 +83,36 @@ public class ItemResources {
         }
         return currentStock;
     }
+
+
+    @GET
+    @Path("/getItem")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Item.class)),
+                    description = "Get an Item"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = ApiException.class)),
+                    description = "Errors/Exceptions")
+    }
+    )
+    public Response getItem(@NotNull @QueryParam("id") int id) {
+        try {
+            ArrayList<Object[]> rows = getItemsFromDB(id);
+            Item[] items= parseItems(rows);
+            JSONObject itemJson = new JSONObject(items[0]);
+            int availability = Integer.parseInt(rows.get(0)[6].toString());
+            itemJson.put("availability", availability);
+            return Response.ok(itemJson.toString()).build();
+        } catch (Exception e) {
+            return checkException(e);
+        }
+    }
+
 
     @POST
     @Path("/postItem")
