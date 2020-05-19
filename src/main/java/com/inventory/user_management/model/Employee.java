@@ -1,7 +1,5 @@
 package com.inventory.user_management.model;
 
-import com.inventory.item_management.model.Item;
-
 import java.util.Objects;
 
 public class Employee extends User {
@@ -30,6 +28,9 @@ public class Employee extends User {
         super(id, "");
     }
 
+    public Employee(){
+    }
+
     public Employee(Object[] row){
         super(Integer.parseInt(row[0].toString()),
                 Objects.toString(row[1].toString(), ""),
@@ -40,9 +41,6 @@ public class Employee extends User {
     }
 
 
-    public void request(Item item){
-        //request for item
-    }
     public String getDepartment() {
         return department;
     }

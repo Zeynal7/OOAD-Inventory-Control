@@ -80,7 +80,7 @@ public class Enums {
         }
 
         public static ItemStatus valueFromString(String status){
-            switch (status.toLowerCase()){
+            switch (status.toLowerCase().trim()){
                 case "available":        return AVAILABLE;
                 case "out of stock":     return OUT_OF_STOCK;
                 case "waiting delivery": return WAITING_DELIVERY;

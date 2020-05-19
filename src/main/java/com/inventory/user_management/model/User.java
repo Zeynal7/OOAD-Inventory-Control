@@ -11,4 +11,5 @@ public class User extends Person{
         super(id, fullname);
     }
 
+    public User(){}
 }

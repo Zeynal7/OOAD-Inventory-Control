@@ -20,7 +20,8 @@ public class ApiException extends Exception {
         NOT_AUTHORIZED(7),
         BLOCKED_USER(8),
         ITEM_HAS_ASSIGNED_EMPLOYEE(9),
-        CANNOT_SET_AVAILABILITY_TO_NEGATIVE(10);
+        CANNOT_SET_AVAILABILITY_TO_NEGATIVE(10),
+        ITEM_IS_NOT_AVAILABLE_FOR_REQUEST(11);
 
         private final int exceptionCode;
 
@@ -93,6 +94,9 @@ public class ApiException extends Exception {
                 break;
             case CANNOT_SET_AVAILABILITY_TO_NEGATIVE:
                 descMessage = "Cannot set availability to negative number.";
+                break;
+            case ITEM_IS_NOT_AVAILABLE_FOR_REQUEST:
+                descMessage = "Item is not available for request.";
                 break;
             default:
                 descMessage = "Unknown Error";

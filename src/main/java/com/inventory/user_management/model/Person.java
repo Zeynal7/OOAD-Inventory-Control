@@ -1,9 +1,5 @@
 package com.inventory.user_management.model;
 
-import com.inventory.item_management.model.Stock;
-
-import static com.inventory.item_management.ItemResources.getCurrentStock;
-
 public abstract class Person {
     private int id;
     private String fullName;
@@ -18,22 +14,8 @@ public abstract class Person {
         this.id = id;
         this.fullName = fullName;
     }
-//
-//    public Stock getAvailableItems(){
-//        try {
-//            return getCurrentStock();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return new Stock();
-//    }
 
-
-//    public Report createReport(List<Employee> employeeList){
-//        // Get Report of items From DB
-//        return new Report();
-//    }
-//// TODO : FIX
+    public Person(){}
 
     public int getId() {
         return id;

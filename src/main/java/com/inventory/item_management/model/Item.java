@@ -48,6 +48,10 @@ public class Item {
         this.name = name;
     }
 
+    public Item(Integer id){
+        this.id = id;
+    }
+
     public Item(){}
 
     public Item(Object[] row){
