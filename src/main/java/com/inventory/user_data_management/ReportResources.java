@@ -82,17 +82,19 @@ public class ReportResources {
                     return Response.ok().entity(report.getJson().toString()).build();
                 case COURIER:
                     // Return items to be delivered.
-                    ArrayList<Request> requests = getNotDeliveredRequests();
+                    ArrayList<Request> requests = getRequestsWithStatus(Enums.ItemStatus.WAITING_DELIVERY);
 
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("waiting-delivery", requests);
                     return Response.ok().entity(jsonObject.toString()).build();
                 case ADMIN:
                     report = getManagerReport(stock);
-                    ArrayList<Request> requests2 = getNotDeliveredRequests();
-                    JSONObject jsonObject2 = report.getJson();
-                    jsonObject2.put("waiting-delivery", requests2);
-                    return Response.ok().entity(jsonObject2.toString()).build();
+                    ArrayList<Request> notDeliveredRequests = getRequestsWithStatus(Enums.ItemStatus.WAITING_DELIVERY);
+                    JSONObject adminReportJson = report.getJson();
+                    adminReportJson.put("waiting-delivery", notDeliveredRequests);
+                    ArrayList<Request> notApprovedRequests = getRequestsWithStatus(Enums.ItemStatus.WAITING_APPROVAL);
+                    adminReportJson.put("waiting-approval", notApprovedRequests);
+                    return Response.ok().entity(adminReportJson.toString()).build();
             }
 
             return Response.ok().entity(stock).build();
@@ -101,9 +103,9 @@ public class ReportResources {
         }
     }
 
-    private ArrayList<Request> getNotDeliveredRequests() throws Exception {
-        Employee[] employeesWaitingDelivery = getEmployeesWaitingDelivery();
-        return getDeliveryWaitingRequests(employeesWaitingDelivery);
+    private ArrayList<Request> getRequestsWithStatus(Enums.ItemStatus itemStatus) throws Exception {
+        Employee[] employeesWithItemStatus = getEmployeesWithItemStatus(itemStatus);
+        return getRequestsOfEmployees(employeesWithItemStatus, itemStatus);
     }
 
     private Report getManagerReport(Stock stock) throws Exception {
@@ -135,8 +137,13 @@ public class ReportResources {
         return getEmployees(query);
     }
 
-    private Employee[] getEmployeesWaitingDelivery() throws Exception {
-        String query = "SELECT user_id, fullname, email, department, supervisor_id FROM `employees_waiting_delivery`\n";
+    private Employee[] getEmployeesWithItemStatus(Enums.ItemStatus itemStatus) throws Exception {
+        String query = "SELECT user_id, fullname, email, department, supervisor_id FROM ";
+        if(itemStatus == Enums.ItemStatus.WAITING_DELIVERY) {
+            query += " `employees_waiting_delivery` ";
+        }else if(itemStatus == Enums.ItemStatus.WAITING_APPROVAL){
+            query += " `employees_waiting_approval` ";
+        }
         return getEmployees(query);
     }
 
@@ -149,17 +156,22 @@ public class ReportResources {
         return employees;
     }
 
-    private ArrayList<Request> getDeliveryWaitingRequests(Employee[] employees) throws Exception {
+    private ArrayList<Request> getRequestsOfEmployees(Employee[] employees, Enums.ItemStatus itemStatus) throws Exception {
         ArrayList<Request> requests = new ArrayList<>();
         for (Employee employee : employees) {
             String query = "SELECT item_id, name, manufacture_date, status, description, item_image_urls," +
-                    " request_id, request_date FROM `delivery_waiting_items`  where employee_id = ? ORDER BY `request_date`";
+                    " request_id, request_date FROM" +
+                    ((itemStatus == Enums.ItemStatus.WAITING_DELIVERY) ?
+                    " `delivery_waiting_items` " :
+                            " `approval_waiting_requests` "
+                    )
+                     + "  where employee_id = ? ORDER BY `request_date`";
             ArrayList<Object[]> requestRows = DbConnection.selectFromDB(query, new Object[]{employee.getId()});
             for (Object[] requestRow : requestRows) {
                 Item itemToDeliver = new Item(requestRow);
                 int requestId = Integer.parseInt(requestRow[6].toString());
                 String date = Objects.toString(requestRow[7], "");
-                requests.add(new Request(requestId, employee, itemToDeliver, date, Enums.ItemStatus.WAITING_DELIVERY.getStatus()));
+                requests.add(new Request(requestId, employee, itemToDeliver, date, itemStatus.getStatus()));
             }
         }
         return requests;
